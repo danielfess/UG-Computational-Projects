@@ -1,0 +1,717 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Project 3 Number Theory</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-02-14"><meta name="DC.source" content="project3.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>Project 3 Number Theory</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Question 1 - Primes</a></li><li><a href="#2">Exercise 1</a></li><li><a href="#3">Exercise 2</a></li><li><a href="#4">Exercise 3</a></li><li><a href="#5">Question 2 - Twin Primes</a></li><li><a href="#6">Exercise 4</a></li><li><a href="#7">Exercise 5</a></li><li><a href="#8">Exercise 6</a></li><li><a href="#9">Question 3 - Triple Digits</a></li><li><a href="#10">Exercise 7</a></li><li><a href="#11">Exercise 8</a></li><li><a href="#12">Exercise 9</a></li></ul></div><h2>Question 1 - Primes<a name="1"></a></h2><pre class="codeinput"><span class="comment">%In this question we investigate the properties of primes and in particular</span>
+<span class="comment">%of consecutive primes.</span>
+</pre><h2>Exercise 1<a name="2"></a></h2><pre class="codeinput"><span class="comment">%In this exercise I have made a function which takes an input N and returns</span>
+<span class="comment">%the next prime strictly greater than it.</span>
+
+<span class="comment">%See nextprime.m below for code and comments:</span>
+
+type <span class="string">nextprime.m</span>
+
+<span class="comment">%Some examples of the code working:</span>
+p = nextprime(18)
+p = nextprime(23)
+p = nextprime(2343)
+</pre><pre class="codeoutput">
+function p = nextprime(N)
+%NEXTPRIME Takes a number N and gives the next prime
+%   NEXTPRIME takes a number N and returns the next prime number
+%   strictly greater than N.
+
+if (N &lt; 1)
+    %isprime only works for non-negative integers, so we must take
+    %this case separately.
+    p = 2;
+elseif (N &gt;= 4294967291)
+    %This is the smallest prime less than 2^32, and isprime doesn't work
+    %for N &gt; 2^32, so if N&gt;=4294967291 nextprime encounters an error when
+    %it tries to work out isprime(x) for all x &gt; 2^32.
+    error('N is too large to compute next prime - N must be less than 4294967291');
+else
+    N = floor(N)+1;
+    %isprime only takes non-negative integer values, so we take the next
+    %integer above our input N.
+    while (isprime(N)==0)
+        N = N+1;
+    %We search through the integers using a loop until we find a prime number.
+    end
+    p = N;
+    %The loop ends once we find a value of N such that isprime(N)~=0
+    %i.e. N is prime. p, our output, takes this value.
+end
+end
+
+p =
+
+    19
+
+
+p =
+
+    29
+
+
+p =
+
+        2347
+
+</pre><h2>Exercise 2<a name="3"></a></h2><pre class="codeinput"><span class="comment">%This exercise asks us to find the first 15 primes n1, such that if n2 is</span>
+<span class="comment">%the next prime, then n2-n1&gt;=40.</span>
+
+n1 = 2; <span class="comment">%We start searching for values of n1 at the smallest prime - 2.</span>
+L = zeros(1,15); <span class="comment">%We preallocate L as a 1x15 matrix to improve efficiency.</span>
+i = 1; <span class="comment">%i counts the number of primes we have found satisfying n2-n1&gt;=40.</span>
+<span class="keyword">while</span> i &lt;= 15
+    n2 = nextprime(n1);
+    <span class="keyword">if</span> (n2 - n1) &gt;= 40
+        L(i) = n1;
+        <span class="comment">%When n2-n1&gt;=40, we add n1 to our list L in the i-th place.</span>
+        i = i+1;
+        <span class="comment">%We increment i since we have found a prime satisfying the given condition.</span>
+    <span class="keyword">else</span> <span class="comment">%We do nothing if n1 doesn't satisfy n2-n1&gt;=40; we don't add it to the list L.</span>
+    <span class="keyword">end</span>
+    n1 = n2;
+    <span class="comment">%n1 takes the value of nextprime(n1) = n2, and then the loop repeats</span>
+    <span class="comment">%until we have our 15 primes - once we have our 15 primes, i = 16, so</span>
+    <span class="comment">%we only need the loop to run for i&lt;=15.</span>
+<span class="keyword">end</span>
+L <span class="comment">%We output our list of the first 15 primes n1 satisfying n2-n1&gt;=40.</span>
+</pre><pre class="codeoutput">
+L =
+
+  Columns 1 through 6
+
+       15683       16141       19333       19609       20809       22573
+
+  Columns 7 through 12
+
+       25261       25471       28229       31397       31907       33247
+
+  Columns 13 through 15
+
+       34061       34981       35617
+
+</pre><h2>Exercise 3<a name="4"></a></h2><pre class="codeinput"><span class="comment">%This exercise asks us to find all primes n1&lt;=1000 such that, if n2 and n3</span>
+<span class="comment">%are the next 2 primes, n1+n2+n3 is divisible by 19.</span>
+
+n1 = 2; n2 = 3; <span class="comment">%We initialise our variables by picking the first 2 primes.</span>
+i = 1; L = [];
+<span class="comment">%i counts the number of primes satisfying the condition, and L contains all such</span>
+<span class="comment">%primes - it starts as an empty list as we haven't yet found any such primes.</span>
+<span class="keyword">while</span> n1 &lt;= 1000
+    n3 = nextprime(n2);
+    <span class="keyword">if</span> mod(n1+n2+n3,19) == 0 <span class="comment">%If n1+n2+n3 is divisible by 19 then this is 0.</span>
+        L(i) = n1; <span class="comment">%Add n1 to the list L in the i-th place.</span>
+        i = i+1; <span class="comment">%Increment i since we have found a prime satisfying the condition.</span>
+    <span class="keyword">else</span> <span class="comment">%Do nothing since n1 doesn't satisfy the condition.</span>
+    <span class="keyword">end</span>
+    n1 = n2;
+    n2 = n3; <span class="comment">%n1 and n2 take the values of the next primes.</span>
+<span class="keyword">end</span>
+L
+<span class="comment">%We output our list L once the loop finishes and we have searched through</span>
+<span class="comment">%all the primes less than 1000.</span>
+</pre><pre class="codeoutput">
+L =
+
+   179   193   269   307   443   673   877
+
+</pre><h2>Question 2 - Twin Primes<a name="5"></a></h2><pre class="codeinput"><span class="comment">%This question is about twin primes, which are primes p such that (p-2) or</span>
+<span class="comment">%(p+2) is prime as well.</span>
+</pre><h2>Exercise 4<a name="6"></a></h2><pre class="codeinput"><span class="comment">%For this exercise I have written a function twin which takes two input</span>
+<span class="comment">%values N1 and N2 and produces a matrix L of all pairs of twin primes (n,n+2)</span>
+<span class="comment">%such that N1&lt;=n&lt;=N2. It also counts how many twin primes there are</span>
+<span class="comment">%satisfying this condition - p gives this value.</span>
+
+<span class="comment">%See twin.m below for code and comments:</span>
+
+type <span class="string">twin.m</span>
+
+<span class="comment">%Some examples of twin working:</span>
+
+[L,p] = twin(2,46)
+[L,p] = twin(567,785)
+</pre><pre class="codeoutput">
+function [L,p] = twin(N1,N2)
+%TWIN Outputs pairs of twin primes (n,n+2) where N1&lt;=n&lt;=N2 and counts
+%the number of such twin primes.
+%   For every pair of twin primes (n,n+2) such that N1&lt;=n&lt;=N2, TWIN returns
+%   each pair in L and counts the number p of twin primes satisfying
+%   N1&lt;=n&lt;=N2.
+
+if N2 &gt;= 4294967291
+    error('N2 is too large to compute all twin primes up to N2 - N2 must be less than 4294967291')
+    %nextprime, and hence twin, don't work if N is greater than or equal
+    %to this value (see nextprime.m for more detailed comment on this).
+else    
+    L = []; i = 1;
+    %L will contain all the twin prime pairs, and i counts the number of
+    %pairs found.
+    n = nextprime(ceil(N1)-1);
+    %n is the smallest prime greater than or equal to N1.
+    while n &lt;=N2
+        m = nextprime(n);
+        if (m-n) == 2 %Tests whether (n,m) is a twin prime pair.
+            L(i,1) = n; %If (n,m) is a twin prime pair, we add them to L.
+            L(i,2) = m;
+            i = i+1; %Increments i as we have found a twin prime pair.
+        else %Do nothing since if (m-n)~=2, (m,n) is not a twin prime pair
+             %so we don't add it to L.
+        end
+        n = m;
+        %n takes on the value of the next prime number, m, and the loop repeats.
+    end
+end
+%Once n &gt; N2 we will have found all the twin prime pairs (n,n+2) satisfying
+%N1&lt;=n&lt;=N2 so the function outputs the matrix L containing all such pairs.
+
+
+if N1&lt;=3 &amp;&amp; N2&gt;=5
+    p = length(L)*2 - 1;
+    %L has 2 columns, so the number of twin primes in L is length(L)*2.
+    %However, in this case 5 appears twice in L so we make p=length(L)*2-1.
+elseif N1&lt;=3 &amp;&amp; N2&lt;5
+    p = 2;
+    %(3,5) is the only twin prime pair in L in this case, so p = 2.
+else
+    p = length(L)*2;
+    %In all other cases, no primes appear more than once in L, so the
+    %number of twin primes, p, is simply length(L)*2.
+end
+end
+
+L =
+
+     3     5
+     5     7
+    11    13
+    17    19
+    29    31
+    41    43
+
+
+p =
+
+    11
+
+
+L =
+
+   569   571
+   599   601
+   617   619
+   641   643
+   659   661
+
+
+p =
+
+    10
+
+</pre><h2>Exercise 5<a name="7"></a></h2><pre class="codeinput"><span class="comment">%This exercise simply asks us to put our twin function to use.</span>
+
+[L1,p1] = twin(5,100)
+[L2,p2] = twin(5,500)
+<span class="comment">%So there are 46 twin primes where 5&lt;=n&lt;=500, since p2 = 46.</span>
+</pre><pre class="codeoutput">
+L1 =
+
+     5     7
+    11    13
+    17    19
+    29    31
+    41    43
+    59    61
+    71    73
+
+
+p1 =
+
+    14
+
+
+L2 =
+
+     5     7
+    11    13
+    17    19
+    29    31
+    41    43
+    59    61
+    71    73
+   101   103
+   107   109
+   137   139
+   149   151
+   179   181
+   191   193
+   197   199
+   227   229
+   239   241
+   269   271
+   281   283
+   311   313
+   347   349
+   419   421
+   431   433
+   461   463
+
+
+p2 =
+
+    46
+
+</pre><h2>Exercise 6<a name="8"></a></h2><pre class="codeinput"><span class="comment">%In this exercise we estimate Brun's constant using the first 10000 twin</span>
+<span class="comment">%prime pairs.</span>
+
+n1 = 2; i = 1; s = 0;
+<span class="comment">%Initialising variables - n1 takes the value of the first prime, 2; i</span>
+<span class="comment">%counts through how many twin primes we have found; and s sums the</span>
+<span class="comment">%reciprocals of the twin primes, which starts at 0 as we have yet to find</span>
+<span class="comment">%any twin primes.</span>
+<span class="keyword">while</span> i&lt;=10000
+    <span class="comment">%The loop runs until we have found the 10000th twin prime pair, at</span>
+    <span class="comment">%which point i becomes 10001, so the loop only needs to run for i&lt;=10000.</span>
+    n2 = nextprime(n1);
+    <span class="keyword">if</span> (n2-n1)==2 <span class="comment">%Test to see if (n1,n2) is a twin prime pair.</span>
+        s = s + 1/n1 + 1/n2; <span class="comment">%Add the reciprocals of the twin prime pair to s.</span>
+        i = i + 1; <span class="comment">%Increment i as we have found a twin prime pair.</span>
+    <span class="keyword">else</span> <span class="comment">%Do nothing if (n1,n2) is not a twin prime pair.</span>
+    <span class="keyword">end</span>
+    n1 = n2;
+    <span class="comment">%n1 takes the value of the next prime, n2, and the loop repeats and</span>
+    <span class="comment">%scans through all the primes until we find the 10000th twin prime pair.</span>
+<span class="keyword">end</span>
+s <span class="comment">%Output s - this is our estimate of Brun's constant.</span>
+
+
+<span class="comment">%As we have summed the reciprocals of the twin primes over the first 10000</span>
+<span class="comment">%pairs of twin primes, the estimate should be fairly accurate. However,</span>
+<span class="comment">%Brun's constant converges VERY slowly, and it turns out that our estimate</span>
+<span class="comment">%is actually not very close to the tightest bounds on Brun's constant -</span>
+<span class="comment">%calculations have shown it to be around 1.9, which is quite different from</span>
+<span class="comment">%our estimate of 1.7140 despite using the first 10000 pairs of twin primes!</span>
+<span class="comment">%Having doing some research on Brun's constant, I am not very confident in</span>
+<span class="comment">%my estimate, and am only confident in the first digit.</span>
+</pre><pre class="codeoutput">
+s =
+
+    1.7140
+
+</pre><h2>Question 3 - Triple Digits<a name="9"></a></h2><pre class="codeinput"><span class="comment">%In this question we look at 3 digit numbers and at properties of their</span>
+<span class="comment">%period.</span>
+</pre><h2>Exercise 7<a name="10"></a></h2><pre class="codeinput"><span class="comment">%I have made a function td_list which creates a list of numbers specific to</span>
+<span class="comment">%each 3 digit number as described in the project manual.</span>
+
+<span class="comment">%See td_list.m below for code and comments:</span>
+
+type <span class="string">td_list.m</span>
+
+<span class="comment">%Some examples of td_list working:</span>
+
+L = td_list(789)
+L = td_list(453)
+L = td_list(101)
+</pre><pre class="codeoutput">
+function L = td_list(N)
+%TD_LIST
+%   TD_LIST takes a natural number between 100 and 999, reverses its
+%   digits, finds the differences between these 2 numbers, and adds this
+%   number to the list. It repeats this process until a number has been
+%   repeated in the list, at which point it outputs the list.
+
+i = 1; L = []; %Initialising variables
+
+if N&lt;100 || N&gt;=1000 || floor(N)~=ceil(N)
+    error('N must be a 3 digit natural number')
+    %td_list only works for 3 digit numbers, so we introduce an error
+    %message for incorrect inputs.
+else
+    while ismember(N,L)==0
+        L(i) = N; %Adds N to the list if it is not already a member.
+        c = mod(N,10);
+        b = mod(N - c,100)/10;
+        a = (N-10*b-c)/100; %Works out the 3 digits of N.
+        N = 99*abs(a-c);
+        %If N = 100*a+10*b+c is our starting number, then N'=100*c+10*b+a
+        %is the flipped version of N, so our new number is abs(N-N') =
+        %99*abs(a-c)
+        i = i+1;
+        %Increment i so the new value of N takes a new position in L and
+        %doesn't replace any current members of L.
+    end
+    %The loop repeats until our new value of N is already in the list, at
+    %which point we add this value to the end of our list - we now have the
+    %required list so the function is done.
+    L(i) = N;
+end
+end
+
+L =
+
+   789   198   693   297   495    99   891   693
+
+
+L =
+
+   453    99   891   693   297   495    99
+
+
+L =
+
+   101     0     0
+
+</pre><h2>Exercise 8<a name="11"></a></h2><pre class="codeinput"><span class="comment">%For this exercise I have written a function td_period which works out the</span>
+<span class="comment">%period of a 3 digit number.</span>
+
+<span class="comment">%See td_period.m below for code and comments:</span>
+
+type <span class="string">td_period.m</span>
+
+<span class="comment">%Some examples of td_period working:</span>
+
+p = td_period(789)
+p = td_period(453)
+p = td_period(101)
+</pre><pre class="codeoutput">
+function p = td_period(N)
+%TD_PERIOD Computes the period of a 3 digit natural number
+%   TD_PERIOD takes a natural number N between 100 and 999 and finds its
+%   period.
+
+if N&lt;100 || N&gt;=1000 || floor(N)~=ceil(N)
+    error('N must be a 3 digit natural number')
+    %td_list only works for 3 digit numbers, so we introduce an error
+    %message for incorrect inputs.
+else
+    L = td_list(N); %Use td_list to create the corresponding list for N.
+    L = fliplr(L); %Flip the list so the last element of L, the repeated
+                   %element, is now the first.
+    x = L(1); %Denote the repeated element by x.
+    p = 2;
+    while L(p)~=x
+        p = p+1;
+    %Loop searches through the elements of the list until it finds the
+    %repeated element again.
+    end
+    %When the loop finishes, it gives p as the position of the repeated
+    %element in the list; the period is the number of elements in our
+    %flipped list before we reach the repeated element again, so we
+    %subtract 1 from p to count the elements before the repeated element,
+    %which is the period.
+    p = p-1;
+end
+end
+
+p =
+
+     5
+
+
+p =
+
+     5
+
+
+p =
+
+     1
+
+</pre><h2>Exercise 9<a name="12"></a></h2><pre class="codeinput"><span class="comment">%We now prove that every 3 digit number has either period 1 or period 5,</span>
+<span class="comment">%using our functions td_period and td_list.</span>
+
+L = []; k = 1; <span class="comment">%Initialising variables.</span>
+<span class="comment">%L will contain any numbers which don't have period 1 or 5.</span>
+<span class="keyword">for</span> i = 100:999 <span class="comment">%Loop runs through all 3 digit numbers.</span>
+    <span class="keyword">if</span> td_period(i)==1 || td_period(i)==5 <span class="comment">%Do nothing if i has period 1 or 5.</span>
+    <span class="keyword">else</span>
+        L(k) = i;
+        k = k+1;
+        <span class="comment">%If a number does not have period 1 or 5 we add it to our list L,</span>
+        <span class="comment">%and we increment k so that the next number without period 1 or 5</span>
+        <span class="comment">%is placed in L in a new postion, and doesn't replace any current</span>
+        <span class="comment">%members of L.</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+L
+<span class="comment">%Once the loop ends we output L, which is our list of all 3 digit numbers</span>
+<span class="comment">%which don't have period 1 or 5.</span>
+
+
+<span class="comment">%Note that L remains empty, so we have shown that all 3 digit numbers have</span>
+<span class="comment">%either period 1 or 5. This is a proof, as we have checked the period of</span>
+<span class="comment">%every single 3 digit number. I would not call it an elegant proof, as</span>
+<span class="comment">%although a computer is very quick at checking all 3 digit numbers for</span>
+<span class="comment">%their period, the proof works by brute force and does not involve any</span>
+<span class="comment">%clever leaps in logic like a written proof might.</span>
+</pre><pre class="codeoutput">
+L =
+
+     []
+
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Project 3 Number Theory
+
+
+%% Question 1 - Primes
+
+%In this question we investigate the properties of primes and in particular
+%of consecutive primes.
+
+%% Exercise 1
+
+%In this exercise I have made a function which takes an input N and returns
+%the next prime strictly greater than it.
+
+%See nextprime.m below for code and comments:
+
+type nextprime.m
+
+%Some examples of the code working:
+p = nextprime(18)
+p = nextprime(23)
+p = nextprime(2343)
+
+
+%% Exercise 2
+
+%This exercise asks us to find the first 15 primes n1, such that if n2 is
+%the next prime, then n2-n1>=40.
+
+n1 = 2; %We start searching for values of n1 at the smallest prime - 2.
+L = zeros(1,15); %We preallocate L as a 1x15 matrix to improve efficiency.
+i = 1; %i counts the number of primes we have found satisfying n2-n1>=40.
+while i <= 15
+    n2 = nextprime(n1);
+    if (n2 - n1) >= 40
+        L(i) = n1;
+        %When n2-n1>=40, we add n1 to our list L in the i-th place.
+        i = i+1;
+        %We increment i since we have found a prime satisfying the given condition.
+    else %We do nothing if n1 doesn't satisfy n2-n1>=40; we don't add it to the list L.
+    end
+    n1 = n2;
+    %n1 takes the value of nextprime(n1) = n2, and then the loop repeats
+    %until we have our 15 primes - once we have our 15 primes, i = 16, so
+    %we only need the loop to run for i<=15.
+end
+L %We output our list of the first 15 primes n1 satisfying n2-n1>=40.
+
+
+%% Exercise 3
+
+%This exercise asks us to find all primes n1<=1000 such that, if n2 and n3
+%are the next 2 primes, n1+n2+n3 is divisible by 19.
+
+n1 = 2; n2 = 3; %We initialise our variables by picking the first 2 primes.
+i = 1; L = [];
+%i counts the number of primes satisfying the condition, and L contains all such
+%primes - it starts as an empty list as we haven't yet found any such primes.
+while n1 <= 1000
+    n3 = nextprime(n2);
+    if mod(n1+n2+n3,19) == 0 %If n1+n2+n3 is divisible by 19 then this is 0.
+        L(i) = n1; %Add n1 to the list L in the i-th place.
+        i = i+1; %Increment i since we have found a prime satisfying the condition.
+    else %Do nothing since n1 doesn't satisfy the condition.
+    end
+    n1 = n2;
+    n2 = n3; %n1 and n2 take the values of the next primes.
+end
+L
+%We output our list L once the loop finishes and we have searched through
+%all the primes less than 1000.
+
+
+
+%% Question 2 - Twin Primes
+
+%This question is about twin primes, which are primes p such that (p-2) or
+%(p+2) is prime as well.
+
+%% Exercise 4
+
+%For this exercise I have written a function twin which takes two input
+%values N1 and N2 and produces a matrix L of all pairs of twin primes (n,n+2)
+%such that N1<=n<=N2. It also counts how many twin primes there are
+%satisfying this condition - p gives this value.
+
+%See twin.m below for code and comments:
+
+type twin.m
+
+%Some examples of twin working:
+
+[L,p] = twin(2,46)
+[L,p] = twin(567,785)
+
+
+%% Exercise 5
+
+%This exercise simply asks us to put our twin function to use.
+
+[L1,p1] = twin(5,100)
+[L2,p2] = twin(5,500)
+%So there are 46 twin primes where 5<=n<=500, since p2 = 46.
+
+
+%% Exercise 6
+
+%In this exercise we estimate Brun's constant using the first 10000 twin
+%prime pairs.
+
+n1 = 2; i = 1; s = 0;
+%Initialising variables - n1 takes the value of the first prime, 2; i
+%counts through how many twin primes we have found; and s sums the
+%reciprocals of the twin primes, which starts at 0 as we have yet to find
+%any twin primes.
+while i<=10000
+    %The loop runs until we have found the 10000th twin prime pair, at
+    %which point i becomes 10001, so the loop only needs to run for i<=10000.
+    n2 = nextprime(n1);
+    if (n2-n1)==2 %Test to see if (n1,n2) is a twin prime pair.
+        s = s + 1/n1 + 1/n2; %Add the reciprocals of the twin prime pair to s.
+        i = i + 1; %Increment i as we have found a twin prime pair.
+    else %Do nothing if (n1,n2) is not a twin prime pair.
+    end
+    n1 = n2;
+    %n1 takes the value of the next prime, n2, and the loop repeats and
+    %scans through all the primes until we find the 10000th twin prime pair.
+end
+s %Output s - this is our estimate of Brun's constant.
+
+
+%As we have summed the reciprocals of the twin primes over the first 10000
+%pairs of twin primes, the estimate should be fairly accurate. However,
+%Brun's constant converges VERY slowly, and it turns out that our estimate
+%is actually not very close to the tightest bounds on Brun's constant -
+%calculations have shown it to be around 1.9, which is quite different from
+%our estimate of 1.7140 despite using the first 10000 pairs of twin primes!
+%Having doing some research on Brun's constant, I am not very confident in
+%my estimate, and am only confident in the first digit.
+
+
+
+%% Question 3 - Triple Digits
+
+%In this question we look at 3 digit numbers and at properties of their
+%period.
+
+%% Exercise 7
+
+%I have made a function td_list which creates a list of numbers specific to
+%each 3 digit number as described in the project manual.
+
+%See td_list.m below for code and comments:
+
+type td_list.m
+
+%Some examples of td_list working:
+
+L = td_list(789)
+L = td_list(453)
+L = td_list(101)
+
+%% Exercise 8
+
+%For this exercise I have written a function td_period which works out the
+%period of a 3 digit number.
+
+%See td_period.m below for code and comments:
+
+type td_period.m
+
+%Some examples of td_period working:
+
+p = td_period(789)
+p = td_period(453)
+p = td_period(101)
+
+%% Exercise 9
+
+%We now prove that every 3 digit number has either period 1 or period 5,
+%using our functions td_period and td_list.
+
+L = []; k = 1; %Initialising variables.
+%L will contain any numbers which don't have period 1 or 5.
+for i = 100:999 %Loop runs through all 3 digit numbers.
+    if td_period(i)==1 || td_period(i)==5 %Do nothing if i has period 1 or 5.
+    else
+        L(k) = i;
+        k = k+1;
+        %If a number does not have period 1 or 5 we add it to our list L,
+        %and we increment k so that the next number without period 1 or 5
+        %is placed in L in a new postion, and doesn't replace any current
+        %members of L.
+    end
+end
+L
+%Once the loop ends we output L, which is our list of all 3 digit numbers
+%which don't have period 1 or 5.
+
+
+%Note that L remains empty, so we have shown that all 3 digit numbers have
+%either period 1 or 5. This is a proof, as we have checked the period of
+%every single 3 digit number. I would not call it an elegant proof, as
+%although a computer is very quick at checking all 3 digit numbers for
+%their period, the proof works by brute force and does not involve any
+%clever leaps in logic like a written proof might.
+##### SOURCE END #####
+--></body></html>

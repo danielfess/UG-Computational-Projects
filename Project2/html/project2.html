@@ -1,0 +1,659 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Project 2 Pattern Formation</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-03-08"><meta name="DC.source" content="project2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>Project 2 Pattern Formation</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">Exercise 1</a></li><li><a href="#3">Exercise 2</a></li><li><a href="#9">Exercise 3</a></li><li><a href="#10">Exercise 4</a></li><li><a href="#12">Exercise 5</a></li><li><a href="#14">Exercise 6</a></li><li><a href="#15">Exercise 7</a></li><li><a href="#17">Exercise 8</a></li><li><a href="#20">Exercise 9</a></li></ul></div><pre class="codeinput"><span class="comment">%This project asks us to investigate the Gray-Scott equations, which model</span>
+<span class="comment">%pattern formation in a reaction-diffusion system, and also numerical</span>
+<span class="comment">%methods for solving ODEs and PDEs.</span>
+</pre><h2>Exercise 1<a name="2"></a></h2><pre class="codeinput"><span class="comment">%We are looking for a steady state solution to the equations:</span>
+
+<span class="comment">%du/dt = -uv^2 + F(1-u)</span>
+<span class="comment">%dv/dt = uv^2 - (c+F)v</span>
+
+<span class="comment">%A steady-state solution u = 1, v = 0 is easily found by inspection,</span>
+<span class="comment">%where du/dt and dv/dt both equal 0. This is known as the zero-diffusion</span>
+<span class="comment">%steady state.</span>
+</pre><h2>Exercise 2<a name="3"></a></h2><pre class="codeinput"><span class="comment">%I have created a function fe which, given dt along with initial conditions</span>
+<span class="comment">%for u and v, and using values of F and c corresponding to spots or</span>
+<span class="comment">%stripes, solves the ODE form of the Gray-Scott equations with a final time</span>
+<span class="comment">%of 100. This makes it easier to compare solutions with different initial</span>
+<span class="comment">%conditions, rather than writing a single script.</span>
+
+type <span class="string">fe.m</span>
+</pre><pre class="codeoutput">
+function fe(u0,v0,str,dt)
+%FE Solves the ODE form of the gray-scott equations numerically
+%   fe takes initial conditions for u and v, sets F and c for either spots
+%   or stripes patterns, and numerically solves the ODE form of the
+%   Gray-Scott equations (i.e. ignoring all partial derivative terms). dt
+%   represents the time-step between iterations of u and v.
+
+tf = 100; %Final time is 100.
+numsteps = ceil(tf/dt); %Works out how many times loop below needs to run.
+dt = tf/numsteps; %Re-adjusts dt so numsteps*dt = tf.
+
+clf; hold on
+c = .065;
+if strcmp(str,'spots') == 1
+    F = .03;
+elseif strcmp(str,'stripes') == 1
+    F = .06;
+else
+    error('str must be "spots" or "stripes"')
+end
+%The above conditional sets c and F depending on whether stripes or spots
+%initial conditions are wanted.
+
+u = u0; v = v0; %Sets variables u and v to their initial values.
+plot(0,u0,'r.'); plot(0,v0,'k.') %Plots initial values of u and v.
+for n = 1:numsteps
+    dudt = -u*v^2 + F*(1-u); %Works out du/dt and dv/dt for u,v at a
+    dvdt = u*v^2 - (c+F)*v;  %specific time n*dt.
+    u = u + dt*dudt; %Use forward euler method to approximate u at a time
+    v = v + dt*dvdt; %dt ahead.
+    plot(n*dt, u, 'r.');
+    plot(n*dt, v, 'k.'); %Plot u and v for each value of time.
+end
+legend('u','v')
+end
+</pre><pre class="codeinput"><span class="comment">%Here are some examples of the code working and producing graphs showing</span>
+<span class="comment">%the evolution of u and v, with different initial conditions in each case.</span>
+
+<span class="comment">%Stripes:</span>
+figure(1)
+fe(0.5,0.5,<span class="string">'stripes'</span>,0.1)
+figure(2)
+fe(0,1,<span class="string">'stripes'</span>,0.1)
+</pre><img vspace="5" hspace="5" src="project2_01.png" alt=""> <img vspace="5" hspace="5" src="project2_02.png" alt=""> <pre class="codeinput"><span class="comment">%These solution curves all tend to the zero diffusion steady state where</span>
+<span class="comment">%u = 1 and v = 0.</span>
+</pre><pre class="codeinput"><span class="comment">%Spots:</span>
+figure(3)
+fe(0.2,0.7,<span class="string">'spots'</span>,0.1)
+figure(4)
+fe(0.4,0.2,<span class="string">'spots'</span>,0.1)
+</pre><img vspace="5" hspace="5" src="project2_03.png" alt=""> <img vspace="5" hspace="5" src="project2_04.png" alt=""> <pre class="codeinput"><span class="comment">%The solution curves for spots have mostly the same behaviour - i.e. they</span>
+<span class="comment">%tend to the zero diffusion steady state. If our final time were larger</span>
+<span class="comment">%this would be easier to see.</span>
+</pre><pre class="codeinput"><span class="comment">%The ODE system is very stable since all initial conditions of u and v</span>
+<span class="comment">%between 0 and 1 tend to the zero diffusion steady state, so small changes</span>
+<span class="comment">%in the initial conditions produce only small, if any, changes in the</span>
+<span class="comment">%output.</span>
+</pre><h2>Exercise 3<a name="9"></a></h2><pre class="codeinput"><span class="comment">%In this exercise we investigate the effect of changing dt on the numerical</span>
+<span class="comment">%solution of our ODEs, and look at the numerical stability of our code.</span>
+
+<span class="comment">%Small changes in dt generally don't change the solution noticeably, but if</span>
+<span class="comment">%dt is close to its critical value, above which the code produces divergent</span>
+<span class="comment">%solutions, then small changes in dt can turn an accurate solution into a</span>
+<span class="comment">%divergent one.</span>
+
+<span class="comment">%The critical value of dt depends on our intital conditions u0 and v0.</span>
+<span class="comment">%For instance, u0 = 0.5, v0 = 0.8 with stripes inital conditions has</span>
+<span class="comment">%critical value dt = 2.777, but for u0 = 0.3, v0 = 0.3 and spots intial</span>
+<span class="comment">%conditions, the code still provides a bounded solution when dt = 10.</span>
+
+<span class="comment">%For the code to be numerically stable, dt must be small enough that no</span>
+<span class="comment">%matter the initial conditions, the solution always remains bounded. Note</span>
+<span class="comment">%that du/dt and dv/dt are greatest in modulus when u = v = 1, and that the</span>
+<span class="comment">%solution is most likely to diverge when these are large in modulus - when</span>
+<span class="comment">%u0 = v0 = 1, we find the critical time for spots and stripes is 1.4084. So</span>
+<span class="comment">%the code is numerically stable, for all initial conditions, below dt =</span>
+<span class="comment">%1.084.</span>
+</pre><h2>Exercise 4<a name="10"></a></h2><pre class="codeinput"><span class="comment">%This exercise asks us to write a function, lap1d_matrix, which creates a</span>
+<span class="comment">%matrix that approximates the second derivative of a function.</span>
+
+<span class="comment">%An example of lap1d_matrix working:</span>
+
+lap1d_matrix(4,0.2)
+</pre><pre class="codeoutput">
+ans =
+
+   (1,1)     -50.0000
+   (2,1)      25.0000
+   (4,1)      25.0000
+   (1,2)      25.0000
+   (2,2)     -50.0000
+   (3,2)      25.0000
+   (2,3)      25.0000
+   (3,3)     -50.0000
+   (4,3)      25.0000
+   (1,4)      25.0000
+   (3,4)      25.0000
+   (4,4)     -50.0000
+
+</pre><pre class="codeinput"><span class="comment">%Here is the code for lap1d_matrix with comments:</span>
+
+type <span class="string">lap1d_matrix.m</span>
+</pre><pre class="codeoutput">
+function L = lap1d_matrix( N , dx )
+%LAP1D_MATRIX Produces an N x N second order differentiation matrix
+%   LAP1D_MATRIX produces an N x N matrix which approximates the second
+%   partial derivative with respect to x of a periodic function u(x,t) at
+%   points which are dx apart.
+
+e = ones(N,1); %Creates an Nx1 column vector of 1s
+L = spdiags([e -2*e e], [-1 0 1], N, N);
+%Creates a sparse matrix with -2's along the leading diagonal and -1's
+%along the diagonals 1 above and 1 below the leading diagonal
+L(1,N) = 1; %This mean the second derivatives at x=0 and x=1-dx rely on
+L(N,1) = 1; %u(x,t) at the other point, giving periodic boundary conditions.
+L = L/dx^2;
+%Scales the entries of L so it approximates the second partial derivative
+%of u with respect to x.
+
+end
+</pre><h2>Exercise 5<a name="12"></a></h2><pre class="codeinput"><span class="comment">%Instead of writing a script, I have written a function heat1.m which takes</span>
+<span class="comment">%inputs N and dt, and then numerically solves the 1-D heat equation. The</span>
+<span class="comment">%final time, tf, and the initial condition for u are fixed. The function</span>
+<span class="comment">%makes it easier to compare the effect of different values of N and dt on</span>
+<span class="comment">%the accuracy of the solution, and in particular makes it easier to find</span>
+<span class="comment">%the critical time associated with each N as we will see in Exercise 6.</span>
+
+type <span class="string">heat1.m</span>
+</pre><pre class="codeoutput">
+function heat1( N, dt )
+%HEAT1 Numerically solves the 1-D heat equation
+%   HEAT1 solves the 1-dimensional heat equation with periodic boundary
+%   conditions on the x-domain [0,1) with a final time of 0.1, and plots
+%   the exact solution too. N determines how many x-points are plotted, and
+%   dt determines how often u(x,t) is recalculated.
+
+close all
+dx = 1/N; %There are N points in [0,1), so they are 1/N apart.
+x = (0:dx:1-dx); %Vector of all the x-points.
+
+L = lap1d_matrix(N,dx); %Produces differentiation matrix.
+u = sin(2*pi*x); %Initial condition for u.
+uxx = -4*pi^2*u; %Worked out from initial condition for u.
+
+tf = 0.1;
+numsteps = ceil(tf/dt); %Uses dt as specified when function is called.
+dt = tf/numsteps;
+figure(1); plot(x,u,'r.-'); hold on; %Plots intitial condition in red.
+
+for i = 1:numsteps
+    u = u + uxx*dt; %Forward euler - u solves the heat eqn, so dudt = uxx.
+    uxx = u*L; %Uses L and new values of u to calculate new values of uxx.
+    if mod(i,floor(numsteps/6)) == 0 || i == numsteps
+        plot(x,u,'k.-');
+        axis([0 1 min(-1,min(u)) max(1,max(u))]);
+        %Plots u in black at select points in time and when the loop
+        %finishes, and sets the axes to always include all plotted points.
+    else
+    end
+end
+xlabel('x'); ylabel('u(x,t)');
+
+figure(2); clf; hold on; plot(x,u,'k.-');
+syms x; ezplot(exp(-4*pi^2*0.1)*sin(2*pi*x));
+%Plots final numerical solution along with exact solution at t = 0.1.
+m = exp(-4*pi^2*0.1); %Maximum absolute value of exact solution at t = 0.1.
+axis([0 1 min([u,-m]) max([u,m])]);
+%Adjusts axes to include all points in both the numerical and exact solutions.
+title('Numerical and exact solutions at t = 0.1');
+legend('Numerical','Exact'); ylabel('u(x,t)');
+
+end
+</pre><pre class="codeinput"><span class="comment">%Now we use our function to numerically solve the heat equation with</span>
+<span class="comment">%initial conditions of u(0,x) = sin(2*pi*x), N = 16, dt = 0.0005 and</span>
+<span class="comment">%tf = 0.1.</span>
+
+heat1(16,0.0005)
+</pre><img vspace="5" hspace="5" src="project2_05.png" alt=""> <img vspace="5" hspace="5" src="project2_06.png" alt=""> <h2>Exercise 6<a name="14"></a></h2><pre class="codeinput"><span class="comment">%We now have to find a relationship between dx and the critical time, dt,</span>
+<span class="comment">%above which the code is not numerically stable.</span>
+
+<span class="comment">%For this I used my function heat1 to find the critical times associated</span>
+<span class="comment">%with various values of N. I changed the final time to 0.3 in heat1, as</span>
+<span class="comment">%divergent solutions may only take large values at later times.</span>
+
+<span class="comment">%Here are some values I calculated:</span>
+
+<span class="comment">%N = 20     dx = 0.05      dt = 0.001315789</span>
+<span class="comment">%N = 40     dx = 0.025     dt = 0.000316122</span>
+<span class="comment">%N = 60     dx = 0.0166..  dt = 0.000139534</span>
+<span class="comment">%N = 80     dx = 0.0125    dt = 0.000078328</span>
+<span class="comment">%N = 100    dx = 0.01      dt = 0.000050091</span>
+
+<span class="comment">%Looking at the data it seems that dt = k*dx^2, where k is a constant.</span>
+<span class="comment">%Working out k from each pair of values we see k is approximately 0.5, with</span>
+<span class="comment">%k seeming to tend to 0.5 as dx gets smaller. Certainly 0.5*dx^2 is less</span>
+<span class="comment">%than dt for the above data, so taking dt =&lt; 0.5*dx^2 should give numerical</span>
+<span class="comment">%stability for all choices of dx.</span>
+</pre><h2>Exercise 7<a name="15"></a></h2><pre class="codeinput"><span class="comment">%This exercise asks us to solve the 2-D heat equation with periodic</span>
+<span class="comment">%boundary conditions on the domain [0,1)x[0,1). The initial condition is</span>
+<span class="comment">%u = sin(2*pi*x)*cos(4*pi*y), and the final time is 0.1. I chose N = 50 as</span>
+<span class="comment">%this gives a lot of points to plot so the solution surface seems smooth,</span>
+<span class="comment">%as the exact solution would.</span>
+
+heat2
+</pre><img vspace="5" hspace="5" src="project2_07.png" alt=""> <img vspace="5" hspace="5" src="project2_08.png" alt=""> <img vspace="5" hspace="5" src="project2_09.png" alt=""> <pre class="codeinput"><span class="comment">%Here is the code for heat2.m with comments:</span>
+
+type <span class="string">heat2.m</span>
+</pre><pre class="codeoutput">
+close all
+N = 50; %N = 50 gives an accurate solution surface.
+dx = 1/N;
+x1d = (0:dx:1-dx);
+y1d = x1d; %x and y take values from 0 to 1-dx that are dx apart.
+[x,y] = meshgrid(x1d,y1d);
+%Creates a grid of points where each point has a unique representation (x,y).
+
+L = lap1d_matrix(N,dx);
+I = speye(size(L));
+L = kron(L,I) + kron(I,L);
+%Produces differentation matrix that will approximate uxx + uyy.
+
+u = sin(2*pi*x).*cos(4*pi*y); %Initial condition.
+dudt = -20*pi^2*u; %Exact initial value of du/dt = uxx + uyy.
+dudt = dudt(:); %Straighten out dudt from a matrix to a vector.
+figure(1); surf(x,y,u); title('Initial condition') %Plot initial condition.
+xlabel('x'); ylabel('y'); zlabel('u(x,y,t)');
+
+u = u(:); %Straighten out u.
+tf = 0.1;
+dt = 0.25*dx^2;
+%In Ex 6 we said dt=&lt;0.5*dx^2, so dt = 0.25*dx^2 ensures this.
+numsteps = ceil(tf/dt);
+
+for i = 1:numsteps
+    u = u + dt*dudt; %Calculate u at a time dt later using forward euler.
+    dudt = L*u; %Approximate uxx + uyy = du/dt.
+    %Note u must be straightened out to multiply with L.
+    if i == 500 %When t = 0.05 (i.e. i = 500), plot solution.
+        uplot = reshape(u,size(x));
+        %Reshape u into a matrix since surf doesn't work with vectors. The
+        %matrix must be the same size as x (and y) for surf to work, too.
+        figure(2); surf(x,y,uplot); title('Solution at t = 0.05')
+        xlabel('x'); ylabel('y'); zlabel('u(x,y,t)');
+    elseif i == numsteps %Plot final approximate solution.
+        uplot = reshape(u,size(x));
+        figure(3); surf(x,y,uplot); title('Final solution at t = 0.1')
+        xlabel('x'); ylabel('y'); zlabel('u(x,y,t)');
+    else
+    end
+end
+</pre><h2>Exercise 8<a name="17"></a></h2><pre class="codeinput"><span class="comment">%Now we are finally ready to compute numerical solutions to the Gray-Scott</span>
+<span class="comment">%equations, using what we have learnt so far about numerically solving</span>
+<span class="comment">%ODEs and PDEs.</span>
+
+<span class="comment">%I have written a function grayscott2.m instead of a script, as this allows</span>
+<span class="comment">%us to easily change N, the diffusion constants eu and ev, and F and c via</span>
+<span class="comment">%switching between spots and stripes conditions.</span>
+
+type <span class="string">grayscott2.m</span>
+</pre><pre class="codeoutput">
+function grayscott2(N,str,eu,ev)
+%GRAYSCOTT2 Numerically solves the Gray-Scott equations
+%   GRAYSCOTT2 takes inputs N and a string, str, and numerically solves the
+%   Gray-Scott equations on the square periodic domain [0,1)x[0,1) with a
+%   final time of 3000. N determines how many (x,y) points are plotted, and
+%   str determines whether spots or stripes conditions are used.
+
+c = .065; %Sets F and c for spots or stripes as specified by str.
+if strcmp(str,'spots') == 1
+    F = .03;
+elseif strcmp(str,'stripes') == 1
+    F = .06;
+else
+    error('str must be "spots" or "stripes"')
+end
+
+dx = 1/N;
+x1d = (0:dx:1-dx);
+y1d = x1d;
+[x,y] = meshgrid(x1d,y1d); %Creates grid of x and y.
+
+L = lap1d_matrix(N,dx); %Creates differentiation matrix
+I = speye(size(L));
+L = kron(I,L) + kron(L,I);
+
+u = min(1, 10*sqrt((x-0.2).^2 + (y-0.2).^2)); %Set initial conditions.
+v = max(0, 1 - 10*sqrt((x-0.3).^2 + 2*(y-0.3).^2));
+figure(1); clf; pcolor(x,y,u); %Plot initial values of u.
+xlabel('x'); ylabel('y'); title('u(x,y,t)')
+figure(2); clf; pcolor(x,y,v); %Plot initial values of v.
+xlabel('x'); ylabel('y'); title('v(x,y,t)')
+
+tf = 6000;
+dt = 0.1;
+numsteps = ceil(tf/dt);
+dt = tf/numsteps;
+u = u(:); %Straighten out u and v.
+v = v(:);
+
+for i = 1:numsteps
+    dudt = eu*L*u - u.*v.^2 + F*(1-u); %Find du/dt and dv/dt as governed by
+    dvdt = ev*L*v + u.*v.^2 - (c+F)*v; %the Gray-Scott equations.
+    u = u + dt*dudt; %Iterate u and v using forward euler.
+    v = v + dt*dvdt;
+    if mod(i,floor(numsteps/10)) == 0 || i == numsteps
+        %Plot u and v periodically using pcolor.
+        uplot = reshape(u,size(x)); vplot = reshape(v,size(x));
+        figure(1); pcolor(x,y,uplot) %Plot u in figure 1.
+        xlabel('x'); ylabel('y'); title('u(x,y,t)')
+        figure(2); pcolor(x,y,vplot) %Plot v in figure 2.
+        xlabel('x'); ylabel('y'); title('v(x,y,t)')
+    else
+    end
+end
+</pre><pre class="codeinput"><span class="comment">%We will take eu = 5*10^-5, ev = 2*10^-5 and N = 100.</span>
+
+<span class="comment">%Stripes:</span>
+
+eu1 = 5*10^-5; ev1 = 2*10^-5;
+grayscott2(100,<span class="string">'stripes'</span>,eu1,ev1)
+</pre><img vspace="5" hspace="5" src="project2_10.png" alt=""> <img vspace="5" hspace="5" src="project2_11.png" alt=""> <pre class="codeinput"><span class="comment">%Spots:</span>
+
+grayscott2(100,<span class="string">'spots'</span>,eu1,ev1)
+</pre><img vspace="5" hspace="5" src="project2_12.png" alt=""> <img vspace="5" hspace="5" src="project2_13.png" alt=""> <h2>Exercise 9<a name="20"></a></h2><pre class="codeinput"><span class="comment">%Setting the diffusion constants to 0 and taking N = 100:</span>
+<span class="comment">%(The below plot is the same for stripes and spots.)</span>
+
+grayscott2(100,<span class="string">'spots'</span>,0,0)
+</pre><img vspace="5" hspace="5" src="project2_14.png" alt=""> <img vspace="5" hspace="5" src="project2_15.png" alt=""> <pre class="codeinput"><span class="comment">%The solution to this problem is that u = 1 for most of the (x,y) in</span>
+<span class="comment">%[0,1)x[0,1), as shown by the plot. However, there is an odd region around</span>
+<span class="comment">%(0.2,0.2), where u0 is not 1 or v0 is not 0, where u = 0. v is 0</span>
+<span class="comment">%everywhere except the points (x,y) on the ellipse (x-.3)^2+2*(y-.3)^2 =</span>
+<span class="comment">%0.01, where v takes various values. We would expect v = 0 and u = 1</span>
+<span class="comment">%everywhere, since in Exercise 2 we showed that when we ignore the</span>
+<span class="comment">%diffusion terms, regardless of the initial values of u or v at a point, u</span>
+<span class="comment">%and v tend to 1 and 0 respectively - the zero difusion steady state.</span>
+</pre><pre class="codeinput">grayscott2(70,<span class="string">'spots'</span>,5*10^-6,5*10^-6)
+
+<span class="comment">%Here v tends to a steady state with a maximum value of 1 around (0.3,0.3)</span>
+<span class="comment">%(the red part of the plot) and decreases uniformly all around this point</span>
+<span class="comment">%to a minimum at (0.9,0.85). u tends to a steady state too, but its</span>
+<span class="comment">%behaviour is strange in that most points are 0 or 1 and there are very few</span>
+<span class="comment">%points with u in (0,1).</span>
+</pre><img vspace="5" hspace="5" src="project2_16.png" alt=""> <img vspace="5" hspace="5" src="project2_17.png" alt=""> <pre class="codeinput">grayscott2(70,<span class="string">'spots'</span>,10^-5,10^-5)
+
+<span class="comment">%In this case u and v also both reach a steady state. Like in the previous</span>
+<span class="comment">%example, v reaches a maximum of 1 at around (0.3,0.3) and decreases</span>
+<span class="comment">%uniformly around that point. However, we see u has different behaviour</span>
+<span class="comment">%here - it is 0 everywhere except a small section around (0.8,0.8).</span>
+</pre><img vspace="5" hspace="5" src="project2_18.png" alt=""> <img vspace="5" hspace="5" src="project2_19.png" alt=""> <pre class="codeinput"><span class="comment">%It seems that in general, when the diffusion constants are non-zero and</span>
+<span class="comment">%equal, u and v reach steady states, where v varies from 0 to 1 across</span>
+<span class="comment">%[0,1)x[0,1), with a maximum of 1 around (0.3,0.3) and a minimum of 0</span>
+<span class="comment">%around (0.9,0.85), and where u's behaviour is unpredictable.</span>
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Project 2 Pattern Formation
+
+
+%%
+%This project asks us to investigate the Gray-Scott equations, which model
+%pattern formation in a reaction-diffusion system, and also numerical
+%methods for solving ODEs and PDEs.
+
+
+%% Exercise 1
+
+%We are looking for a steady state solution to the equations:
+
+%du/dt = -uv^2 + F(1-u)
+%dv/dt = uv^2 - (c+F)v
+
+%A steady-state solution u = 1, v = 0 is easily found by inspection,
+%where du/dt and dv/dt both equal 0. This is known as the zero-diffusion
+%steady state.
+
+
+%% Exercise 2
+
+%I have created a function fe which, given dt along with initial conditions
+%for u and v, and using values of F and c corresponding to spots or
+%stripes, solves the ODE form of the Gray-Scott equations with a final time
+%of 100. This makes it easier to compare solutions with different initial
+%conditions, rather than writing a single script.
+
+type fe.m
+
+%%
+%Here are some examples of the code working and producing graphs showing
+%the evolution of u and v, with different initial conditions in each case.
+
+%Stripes:
+figure(1)
+fe(0.5,0.5,'stripes',0.1)
+figure(2)
+fe(0,1,'stripes',0.1)
+
+%%
+%These solution curves all tend to the zero diffusion steady state where
+%u = 1 and v = 0.
+
+%%
+%Spots:
+figure(3)
+fe(0.2,0.7,'spots',0.1)
+figure(4)
+fe(0.4,0.2,'spots',0.1)
+
+%%
+%The solution curves for spots have mostly the same behaviour - i.e. they
+%tend to the zero diffusion steady state. If our final time were larger
+%this would be easier to see.
+
+%%
+%The ODE system is very stable since all initial conditions of u and v
+%between 0 and 1 tend to the zero diffusion steady state, so small changes
+%in the initial conditions produce only small, if any, changes in the
+%output.
+
+
+%% Exercise 3
+
+%In this exercise we investigate the effect of changing dt on the numerical
+%solution of our ODEs, and look at the numerical stability of our code.
+
+%Small changes in dt generally don't change the solution noticeably, but if
+%dt is close to its critical value, above which the code produces divergent
+%solutions, then small changes in dt can turn an accurate solution into a
+%divergent one.
+
+%The critical value of dt depends on our intital conditions u0 and v0.
+%For instance, u0 = 0.5, v0 = 0.8 with stripes inital conditions has
+%critical value dt = 2.777, but for u0 = 0.3, v0 = 0.3 and spots intial
+%conditions, the code still provides a bounded solution when dt = 10.
+
+%For the code to be numerically stable, dt must be small enough that no
+%matter the initial conditions, the solution always remains bounded. Note
+%that du/dt and dv/dt are greatest in modulus when u = v = 1, and that the
+%solution is most likely to diverge when these are large in modulus - when
+%u0 = v0 = 1, we find the critical time for spots and stripes is 1.4084. So
+%the code is numerically stable, for all initial conditions, below dt =
+%1.084.
+
+%% Exercise 4
+
+%This exercise asks us to write a function, lap1d_matrix, which creates a
+%matrix that approximates the second derivative of a function.
+
+%An example of lap1d_matrix working:
+
+lap1d_matrix(4,0.2)
+
+%%
+%Here is the code for lap1d_matrix with comments:
+
+type lap1d_matrix.m
+
+
+%% Exercise 5
+
+%Instead of writing a script, I have written a function heat1.m which takes
+%inputs N and dt, and then numerically solves the 1-D heat equation. The
+%final time, tf, and the initial condition for u are fixed. The function
+%makes it easier to compare the effect of different values of N and dt on
+%the accuracy of the solution, and in particular makes it easier to find
+%the critical time associated with each N as we will see in Exercise 6.
+
+type heat1.m
+
+
+%%
+%Now we use our function to numerically solve the heat equation with
+%initial conditions of u(0,x) = sin(2*pi*x), N = 16, dt = 0.0005 and
+%tf = 0.1.
+
+heat1(16,0.0005)
+
+
+%% Exercise 6
+
+%We now have to find a relationship between dx and the critical time, dt,
+%above which the code is not numerically stable.
+
+%For this I used my function heat1 to find the critical times associated
+%with various values of N. I changed the final time to 0.3 in heat1, as
+%divergent solutions may only take large values at later times.
+
+%Here are some values I calculated:
+
+%N = 20     dx = 0.05      dt = 0.001315789
+%N = 40     dx = 0.025     dt = 0.000316122
+%N = 60     dx = 0.0166..  dt = 0.000139534
+%N = 80     dx = 0.0125    dt = 0.000078328
+%N = 100    dx = 0.01      dt = 0.000050091
+
+%Looking at the data it seems that dt = k*dx^2, where k is a constant.
+%Working out k from each pair of values we see k is approximately 0.5, with
+%k seeming to tend to 0.5 as dx gets smaller. Certainly 0.5*dx^2 is less
+%than dt for the above data, so taking dt =< 0.5*dx^2 should give numerical
+%stability for all choices of dx.
+
+
+%% Exercise 7
+
+%This exercise asks us to solve the 2-D heat equation with periodic
+%boundary conditions on the domain [0,1)x[0,1). The initial condition is
+%u = sin(2*pi*x)*cos(4*pi*y), and the final time is 0.1. I chose N = 50 as
+%this gives a lot of points to plot so the solution surface seems smooth,
+%as the exact solution would.
+
+heat2
+
+%%
+%Here is the code for heat2.m with comments:
+
+type heat2.m
+
+%% Exercise 8
+
+%Now we are finally ready to compute numerical solutions to the Gray-Scott
+%equations, using what we have learnt so far about numerically solving
+%ODEs and PDEs.
+
+%I have written a function grayscott2.m instead of a script, as this allows
+%us to easily change N, the diffusion constants eu and ev, and F and c via
+%switching between spots and stripes conditions.
+
+type grayscott2.m
+
+%%
+
+%We will take eu = 5*10^-5, ev = 2*10^-5 and N = 100.
+
+%Stripes:
+
+eu1 = 5*10^-5; ev1 = 2*10^-5;
+grayscott2(100,'stripes',eu1,ev1)
+
+%%
+%Spots:
+
+grayscott2(100,'spots',eu1,ev1)
+
+%% Exercise 9
+
+%Setting the diffusion constants to 0 and taking N = 100:
+%(The below plot is the same for stripes and spots.)
+
+grayscott2(100,'spots',0,0)
+
+%%
+%The solution to this problem is that u = 1 for most of the (x,y) in
+%[0,1)x[0,1), as shown by the plot. However, there is an odd region around
+%(0.2,0.2), where u0 is not 1 or v0 is not 0, where u = 0. v is 0
+%everywhere except the points (x,y) on the ellipse (x-.3)^2+2*(y-.3)^2 =
+%0.01, where v takes various values. We would expect v = 0 and u = 1
+%everywhere, since in Exercise 2 we showed that when we ignore the
+%diffusion terms, regardless of the initial values of u or v at a point, u
+%and v tend to 1 and 0 respectively - the zero difusion steady state.
+
+%%
+grayscott2(70,'spots',5*10^-6,5*10^-6)
+
+%Here v tends to a steady state with a maximum value of 1 around (0.3,0.3)
+%(the red part of the plot) and decreases uniformly all around this point
+%to a minimum at (0.9,0.85). u tends to a steady state too, but its
+%behaviour is strange in that most points are 0 or 1 and there are very few
+%points with u in (0,1).
+
+%%
+grayscott2(70,'spots',10^-5,10^-5)
+
+%In this case u and v also both reach a steady state. Like in the previous
+%example, v reaches a maximum of 1 at around (0.3,0.3) and decreases
+%uniformly around that point. However, we see u has different behaviour
+%here - it is 0 everywhere except a small section around (0.8,0.8).
+
+%%
+%It seems that in general, when the diffusion constants are non-zero and
+%equal, u and v reach steady states, where v varies from 0 to 1 across
+%[0,1)x[0,1), with a maximum of 1 around (0.3,0.3) and a minimum of 0
+%around (0.9,0.85), and where u's behaviour is unpredictable.
+##### SOURCE END #####
+--></body></html>
